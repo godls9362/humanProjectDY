@@ -40,6 +40,37 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 		}
 		return null;
 	}
+	public LocalFood_DTO cal(String id) { //지금까지 구매한 물품들의 금액을 구하는 메서드
+		String sql="select sum(price) from localfood where no in(select no from basket where user id=?) ";
+		PreparedStatement ppst = null;
+		LocalFood_DTO lfDTO=null;
+		rs=null;
+		if(conn()!=null) {
+			try {
+				lfDTO=new LocalFood_DTO();
+				ppst=conn.prepareStatement(sql);
+				ppst.setString(1, id);
+				rs=ppst.executeQuery();
+				if(rs.next()) {
+					lfDTO.setPrice(rs.getInt("price"));
+				}
+			} catch (Exception e) {
+				// TODO: handle exception
+			}finally {
+				try {
+					if (conn != null)
+						conn.close();
+					if (ppst != null)
+						ppst.close();
+				} catch (Exception e2) {
+					// TODO: handle exception
+					e2.printStackTrace();
+				}
+			}
+		}
+		return lfDTO;
+	}
+	
 
 	public void insertGoods(LocalFood_DTO lfDTO) { // 물건입고
 		String sql = "insert into localfood values(seq_localfood.nextval,?,?,?,?)";
@@ -113,6 +144,7 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 			try {
 				lfDTO = new LocalFood_DTO();
 				ppst = conn.prepareStatement(sql);
+				ppst.setInt(1, no);
 				rs = ppst.executeQuery();
 				if (rs.next()) {
 					lfDTO.setNo(rs.getInt("no"));

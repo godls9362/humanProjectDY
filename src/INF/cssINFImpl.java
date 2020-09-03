@@ -12,7 +12,7 @@ public class cssINFImpl implements cssINF {
 	private Basket_DAO bkdao = Basket_DAO.getinstance();
 	private LocalFood_DAO lfdao = LocalFood_DAO.getinstance();
 	private Scanner in = new Scanner(System.in);
-
+	
 	@Override	//메서드 재정의 
 	public void buy() {
 		listAll();
@@ -81,5 +81,17 @@ public class cssINFImpl implements cssINF {
 			System.out.println("수      량: "+bkDTO.getCnt());
 			System.out.println("-----------------------------");
 		}
+	}
+	@Override
+	public void pay() {
+		System.out.println("결제를 시작합니다.");
+		System.out.println("--------------------");
+		System.out.println("고객님의 id를 입력하세요.");
+		System.out.println("-----------------------------");
+		String k=in.nextLine();
+		LocalFood_DTO lfDTO=new LocalFood_DTO ();
+		lfDTO=lfdao.cal(k);
+		System.out.println("결제하실 금액은 "+lfDTO.getPrice()+"원 입니다.");
+	
 	}
 }
