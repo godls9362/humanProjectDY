@@ -21,7 +21,13 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 		
 	}
 	
-	public static 
+	public static LocalFood_DAO lfdao=null;
+	public static LocalFood_DAO getinstance() {
+		if(lfdao==null) {
+			lfdao=new LocalFood_DAO();
+		}
+		return lfdao;
+	}
 
 	public Connection conn() {  
 		try { // try catch 구문은 예외가 발생할 경우 시스템의 오동작을 방지 하기 위한 구문
@@ -130,14 +136,14 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 		}
 		return lfDTO;
 	}
-	public void updateCnt(LocalFood_DTO lfDTO) {  //고객의 구매량에 따라 재고 감소
+	public void updateCnt(int cnt,int No) {  //고객의 구매량에 따라 재고 감소
 		String sql="update localfood set stock=stock-? where no=?";
 		PreparedStatement ppst=null;
 		if(conn()!=null) {
 			try {
 				ppst=conn.prepareStatement(sql);
-				ppst.setInt(1, lfDTO.getStock());
-				ppst.setInt(2, lfDTO.getNo());
+				ppst.setInt(1, cnt);
+				ppst.setInt(2, No);
 				ppst.executeUpdate();
 			} catch (Exception e) {
 				e.printStackTrace();
