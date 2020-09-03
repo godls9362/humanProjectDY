@@ -16,6 +16,12 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 	private String id = "system";
 	private String pwd = "1111";
 	private ResultSet rs = null; // 쿼리문의 결과를 저장하는 변수
+	
+	private LocalFood_DAO(){
+		
+	}
+	
+	public static 
 
 	public Connection conn() {  
 		try { // try catch 구문은 예외가 발생할 경우 시스템의 오동작을 방지 하기 위한 구문
@@ -124,7 +130,7 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 		}
 		return lfDTO;
 	}
-	public void updateCnt(LocalFood_DTO lfDTO) {  //고객의 구매량에 따라 재고 감량
+	public void updateCnt(LocalFood_DTO lfDTO) {  //고객의 구매량에 따라 재고 감소
 		String sql="update localfood set stock=stock-? where no=?";
 		PreparedStatement ppst=null;
 		if(conn()!=null) {

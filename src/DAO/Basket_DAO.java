@@ -27,7 +27,7 @@ public class Basket_DAO {  //고객의 구매를 관리하는 DAO
 		}
 		return null;
 	}
-	public void addToCart(Basket_DTO bkDTO) {
+	public void addToCart(Basket_DTO bkDTO) {    //고객이 물건을 구매하는 메서드
 		String sql="insert into basket values(?,?,?)";
 		PreparedStatement ppst=null;
 		if(conn()!=null) {
@@ -51,7 +51,7 @@ public class Basket_DAO {  //고객의 구매를 관리하는 DAO
 			}
 		}
 	}
-	public ArrayList<Basket_DTO> myList (Basket_DTO bkDTO){
+	public ArrayList<Basket_DTO> myList (Basket_DTO bkDTO){  //고객의 구매목록을 보는메서드
 		ArrayList<Basket_DTO> blist=new ArrayList<>();
 		String sql="select * from basket where id=?";
 		PreparedStatement ppst=null;

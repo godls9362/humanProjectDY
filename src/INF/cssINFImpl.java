@@ -1,5 +1,5 @@
 package INF;
 
-public class cssINFImpl {
-
+public class cssINFImpl implements cssINF{
+	
 }
