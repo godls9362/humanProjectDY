@@ -1,6 +1,6 @@
 package DTO;
 
-public class Basket_DTO {
+public class Basket_DTO {   //고객 물건관리
 	private int no; 
 	private	String userid;
 	private int cnt;
