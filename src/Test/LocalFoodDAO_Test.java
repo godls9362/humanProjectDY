@@ -33,7 +33,7 @@ public class LocalFoodDAO_Test {
 		for (int i = 0; i < lflist.size(); i++) {
 			LocalFood_DTO temp = new LocalFood_DTO();
 			temp = lflist.get(i);
-			System.out.println(i + " 번 물건입니다.");
+			System.out.println((i+1) + " 번 물건입니다.");
 			System.out.println("물건번호: " + temp.getNo());
 			System.out.println("물건이름: " + temp.getName());
 			System.out.println("상품가격: " + temp.getPrice());

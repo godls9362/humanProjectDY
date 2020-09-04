@@ -11,7 +11,7 @@ import DTO.Basket_DTO;
 public class Basket_DAO {  //고객의 구매를 관리하는 DAO
 	private Connection conn = null; // oracle 접속하기 위한 연결 컨넥션
 	private String driver = "oracle.jdbc.driver.OracleDriver";
-	private String url = "jdbc:oracle:thin:@localhost:1521:orcl";
+	private String url = "jdbc:oracle:thin:@localhost:1521:orcl1";
 	private String id = "system";
 	private String pwd = "1111";
 	private ResultSet rs = null; // 쿼리문의 결과를 저장하는 변수

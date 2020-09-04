@@ -12,7 +12,7 @@ import DTO.LocalFood_DTO;
 public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 	private Connection conn = null; // oracle 접속하기 위한 연결 컨넥션
 	private String driver = "oracle.jdbc.driver.OracleDriver";
-	private String url = "jdbc:oracle:thin:@localhost:1521:orcl";
+	private String url = "jdbc:oracle:thin:@localhost:1521:orcl1";
 	private String id = "system";
 	private String pwd = "1111";
 	private ResultSet rs = null; // 쿼리문의 결과를 저장하는 변수
@@ -40,28 +40,26 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 		}
 		return null;
 	}
-	public LocalFood_DTO cal(String id) { //지금까지 구매한 물품들의 금액을 구하는 메서드
-		String sql="select sum(price) from localfood where no in(select no from basket where user id=?) ";
-		PreparedStatement ppst = null;
+	public LocalFood_DTO  cal() { //지금까지 구매한 물품들의 금액을 구하는 메서드
+		String sql="select * from view2";
+		Statement st = null;
 		LocalFood_DTO lfDTO=null;
 		rs=null;
 		if(conn()!=null) {
 			try {
 				lfDTO=new LocalFood_DTO();
-				ppst=conn.prepareStatement(sql);
-				ppst.setString(1, id);
-				rs=ppst.executeQuery();
-				if(rs.next()) {
-					lfDTO.setPrice(rs.getInt("price"));
-				}
+				st=conn.createStatement();
+				rs=st.executeQuery(sql);
+				if(rs.next());
+				lfDTO.setPrice(rs.getInt("price"));
 			} catch (Exception e) {
 				// TODO: handle exception
 			}finally {
 				try {
 					if (conn != null)
 						conn.close();
-					if (ppst != null)
-						ppst.close();
+					if (st != null)
+						st.close();
 				} catch (Exception e2) {
 					// TODO: handle exception
 					e2.printStackTrace();
@@ -73,7 +71,7 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 	
 
 	public void insertGoods(LocalFood_DTO lfDTO) { // 물건입고
-		String sql = "insert into localfood values(seq_localfood.nextval,?,?,?,?)";
+		String sql = "insert into localfood values(seq_lf.nextval,?,?,?,?)";
 		PreparedStatement ppst = null;
 
 		if (conn() != null) {

@@ -19,7 +19,6 @@ public class cssINFImpl implements cssINF {
 		int selNo = -1;
 		String userid = null;
 		int Cnt = -1;
-
 		System.out.println("구매를 원하시면 Y를 아니면 N을 눌러주세요.");
 		System.out.println("-----------------------------------");
 		String answer = in.nextLine();
@@ -84,14 +83,9 @@ public class cssINFImpl implements cssINF {
 	}
 	@Override
 	public void pay() {
-		System.out.println("결제를 시작합니다.");
+		System.out.println("고객님의 결제목록입니다.");
 		System.out.println("--------------------");
-		System.out.println("고객님의 id를 입력하세요.");
-		System.out.println("-----------------------------");
-		String k=in.nextLine();
-		LocalFood_DTO lfDTO=new LocalFood_DTO ();
-		lfDTO=lfdao.cal(k);
-		System.out.println("결제하실 금액은 "+lfDTO.getPrice()+"원 입니다.");
-	
+		LocalFood_DTO lfDTO=lfdao.cal();
+		System.out.println(lfDTO.getPrice()+"원입니다.");
 	}
 }
