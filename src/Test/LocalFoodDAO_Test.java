@@ -24,21 +24,32 @@ public class LocalFoodDAO_Test {
 		lfDTO.setMadeBy("조홍식");
 		lfDTO.setStock(3);
 		lfDAO.insertGoods(lfDTO);
+		if(lfDAO!=null) {
+			System.out.println("저장되었습니다.");
+		}else {
+			System.out.println("다시시도해주십시오.");
+		}
 	}
 
 	@Test
 	public void selectAll() {
 		ArrayList<LocalFood_DTO> lflist = new ArrayList<>();
 		lflist = lfDAO.selectAll();
+		LocalFood_DTO temp = new LocalFood_DTO();
 		for (int i = 0; i < lflist.size(); i++) {
-			LocalFood_DTO temp = new LocalFood_DTO();
 			temp = lflist.get(i);
-			System.out.println((i+1) + " 번 물건입니다.");
-			System.out.println("물건번호: " + temp.getNo());
-			System.out.println("물건이름: " + temp.getName());
-			System.out.println("상품가격: " + temp.getPrice());
-			System.out.println("농부: " + temp.getMadeBy());
-			System.out.println("남은수량: " + temp.getStock());
+			if(temp!=null) {
+				System.out.println(temp.getNo());
+				System.out.println(temp.getName());
+				System.out.println(temp.getMadeBy());
+				System.out.println(temp.getPrice());
+				System.out.println(temp.getStock());
+				
+				
+			}else {
+				System.out.println("출력에 실패하였습니다.");
+				break;
+			}
 		}
 	}
 
@@ -47,11 +58,7 @@ public class LocalFoodDAO_Test {
 		LocalFood_DTO temp = new LocalFood_DTO();
 		temp = lfDAO.findOne(1);
 		if (temp != null) {
-			System.out.println(temp.getNo());
-			System.out.println(temp.getName());
-			System.out.println(temp.getPrice());
-			System.out.println(temp.getMadeBy());
-			System.out.println(temp.getStock());
+			System.out.println("물건을 찾았습니다.");
 		}else {
 			System.out.println("찾으시는 물건의 번호가 잘못되었습니다.");
 		}
@@ -59,6 +66,7 @@ public class LocalFoodDAO_Test {
 	@Test
 	public void minusCnt() {
 		lfDAO.updateCnt(2, 1);
+		
 	}
 	@Test
 	public void delete() {

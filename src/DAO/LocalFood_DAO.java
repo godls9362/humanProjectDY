@@ -1,22 +1,10 @@
 package DAO;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
 import DTO.LocalFood_DTO;
 
-public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
-	private Connection conn = null; // oracle 접속하기 위한 연결 컨넥션
-	private String driver = "oracle.jdbc.driver.OracleDriver";
-	private String url = "jdbc:oracle:thin:@localhost:1521:orcl1";
-	private String id = "system";
-	private String pwd = "1111";
-	private ResultSet rs = null; // 쿼리문의 결과를 저장하는 변수
-	
+public class LocalFood_DAO extends DAObase { // 로컬푸드 물건들을 관리하는 DAO
 	private LocalFood_DAO(){
 		
 	}
@@ -29,52 +17,57 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 		return lfdao;
 	}
 
-	public Connection conn() {  
-		try { // try catch 구문은 예외가 발생할 경우 시스템의 오동작을 방지 하기 위한 구문
-			Class.forName(driver); // DB에 접속하기 위한 드라이버 로딩.
-			conn = DriverManager.getConnection(url, id, pwd); // db에 접속
-			System.out.println("DB연결이 되었습니다.");
-			return conn;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	public LocalFood_DTO  cal() { //지금까지 구매한 물품들의 금액을 구하는 메서드
+	public ArrayList<LocalFood_DTO>  cal() { //고객의 장바구니 총금액을 보는 메서드
 		String sql="select * from view2";
-		Statement st = null;
+		 st = null;
 		LocalFood_DTO lfDTO=null;
 		rs=null;
-		if(conn()!=null) {
+		ArrayList<LocalFood_DTO> list=new ArrayList<>();
+		if(connect()!=null) {
 			try {
 				lfDTO=new LocalFood_DTO();
 				st=conn.createStatement();
 				rs=st.executeQuery(sql);
 				if(rs.next());
 				lfDTO.setPrice(rs.getInt("price"));
+				list.add(lfDTO);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}finally {
-				try {
-					if (conn != null)
-						conn.close();
-					if (st != null)
-						st.close();
-				} catch (Exception e2) {
-					// TODO: handle exception
-					e2.printStackTrace();
-				}
+				disconnect();
 			}
 		}
-		return lfDTO;
+		return list;
 	}
+	public ArrayList<LocalFood_DTO> yourPay(String userid) {
+		ppst = null;
+		String sql = "select sum(localfood.price)price from localfood inner join basket on basket.no=localfood.no where basket.userid=?";
+		LocalFood_DTO lfdto=null;
+		ArrayList<LocalFood_DTO> list=new ArrayList<>();
+		try {
+			lfdto=new LocalFood_DTO();
+			ppst = conn.prepareStatement(sql);
+			ppst.setString(1, userid);
+			rs = ppst.executeQuery();
+			while(rs.next()) {
+			lfdto.setPrice(rs.getInt("price"));
+			list.add(lfdto);
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		} finally {
+			disconnect();
+		}
+		return list;
+	}
+
 	
 
 	public void insertGoods(LocalFood_DTO lfDTO) { // 물건입고
 		String sql = "insert into localfood values(seq_lf.nextval,?,?,?,?)";
-		PreparedStatement ppst = null;
+		 ppst = null;
 
-		if (conn() != null) {
+		if (connect() != null) {
 			try {
 				ppst = conn.prepareStatement(sql);
 				ppst.setString(1, lfDTO.getName());
@@ -86,15 +79,7 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				try {
-					if (conn != null)
-						conn.close();
-					if (ppst != null)
-						ppst.close();
-				} catch (Exception e2) {
-					// TODO: handle exception
-					e2.printStackTrace();
-				}
+				disconnect();
 			}
 		}
 	}
@@ -102,15 +87,14 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 	public ArrayList<LocalFood_DTO> selectAll() {  //물건보기
 		ArrayList<LocalFood_DTO> lflist = new ArrayList<>();
 		String sql = "select * from localfood";
-		Statement st = null;
+		 st = null;
 		rs = null;
-		LocalFood_DTO lfDTO = null;
-		if (conn() != null) {
+		if (connect() != null) {
 			try {
-				lfDTO = new LocalFood_DTO();
 				st = conn.createStatement();
 				rs = st.executeQuery(sql);
 				while (rs.next()) {
+					LocalFood_DTO lfDTO = new LocalFood_DTO();
 					lfDTO.setNo(rs.getInt("no"));
 					lfDTO.setName(rs.getString("name"));
 					lfDTO.setPrice(rs.getInt("price"));
@@ -121,14 +105,7 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				try {
-					if (conn != null)
-						conn.close();
-					if (st != null)
-						st.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				disconnect();
 			}
 		}
 		return lflist;
@@ -136,9 +113,9 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 
 	public LocalFood_DTO findOne(int no) { //고유번호로 물건찾기
 		String sql = "select * from localfood where no=?";
-		PreparedStatement ppst = null;
+		 ppst = null;
 		LocalFood_DTO lfDTO = null;
-		if (conn() != null) {
+		if (connect() != null) {
 			try {
 				lfDTO = new LocalFood_DTO();
 				ppst = conn.prepareStatement(sql);
@@ -154,22 +131,15 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					if (conn != null)
-						conn.close();
-					if (ppst != null)
-						ppst.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				disconnect();
 			}
 		}
 		return lfDTO;
 	}
 	public void updateCnt(int cnt,int No) {  //고객의 구매량에 따라 재고 감소
 		String sql="update localfood set stock=stock-? where no=?";
-		PreparedStatement ppst=null;
-		if(conn()!=null) {
+		ppst=null;
+		if(connect()!=null) {
 			try {
 				ppst=conn.prepareStatement(sql);
 				ppst.setInt(1, cnt);
@@ -178,21 +148,14 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
-				try {
-					if (conn != null)
-						conn.close();
-					if (ppst != null)
-						ppst.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				disconnect();
 			}
 		}
 	}
 	public void deleteOne(int no) {  //물건 삭제하기 
 		String sql="delete from localfood where no=?";
-		PreparedStatement ppst=null;
-		if(conn()!=null) {
+		ppst=null;
+		if(connect()!=null) {
 			try {
 				ppst=conn.prepareStatement(sql);
 				ppst.setInt(1, no);
@@ -200,14 +163,7 @@ public class LocalFood_DAO { // 로컬푸드 물건들을 관리하는 DAO
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				try {
-					if (conn != null)
-						conn.close();
-					if (ppst != null)
-						ppst.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
+				disconnect();
 			}
 		}
 		
